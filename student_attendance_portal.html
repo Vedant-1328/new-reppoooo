@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f0f4ff;
+  --card:#ffffff;
+  --ink:#0b1120;
+  --sub:#4a5568;
+  --accent:#1a56db;
+  --accent-lt:#dbeafe;
+  --green:#059669;
+  --green-lt:#d1fae5;
+  --red:#dc2626;
+  --red-lt:#fee2e2;
+  --border:#d1ddf7;
+  --shadow:0 4px 32px rgba(26,86,219,0.10);
+  --radius:14px;
+}
+
+body{
+  background:var(--bg);
+  font-family:'DM Mono',monospace;
+  color:var(--ink);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 16px;
+}
+
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 10% 0%, rgba(26,86,219,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(5,150,105,0.06) 0%,transparent 60%);
+  pointer-events:none;
+}
+
+/* Grid dots bg */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(26,86,219,0.12) 1px, transparent 1px);
+  background-size:28px 28px;
+  pointer-events:none;
+  opacity:.5;
+}
+
+.shell{width:100%;max-width:480px;position:relative;z-index:1;}
+
+/* Top bar */
+.topbar{
+  display:flex;align-items:center;gap:10px;
+  background:var(--ink);
+  border-radius:var(--radius) var(--radius) 0 0;
+  padding:12px 20px;
+}
+
+.topbar-logo{
+  font-family:'Clash Display',sans-serif;
+  font-size:1rem;font-weight:700;
+  color:#fff;letter-spacing:-0.3px;
+}
+
+.topbar-badge{
+  margin-left:auto;
+  background:rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.7);
+  font-size:.58rem;letter-spacing:1.5px;
+  text-transform:uppercase;
+  padding:3px 8px;border-radius:20px;
+}
+
+/* URL bar */
+.urlbar{
+  background:#1e293b;
+  padding:9px 16px;
+  display:flex;align-items:center;gap:8px;
+  font-size:.7rem;color:rgba(255,255,255,0.55);
+}
+
+.url-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#10b981;
+  box-shadow:0 0 6px #10b981;
+  flex-shrink:0;
+}
+
+.url-text{color:#6ee7b7;letter-spacing:.3px;}
+
+/* Main card */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);
+  padding:32px 28px 28px;
+  box-shadow:var(--shadow);
+}
+
+.card-head{margin-bottom:24px;}
+
+.card-head h1{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.55rem;font-weight:700;
+  color:var(--ink);letter-spacing:-0.5px;line-height:1.1;
+}
+
+.card-head p{
+  font-size:.72rem;color:var(--sub);
+  margin-top:6px;line-height:1.5;
+}
+
+/* Session pill */
+.session-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent-lt);
+  border:1px solid #bfdbfe;
+  border-radius:20px;
+  padding:4px 12px;
+  font-size:.6rem;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--accent);
+  margin-bottom:20px;
+}
+
+.pulse{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  animation:blink 1.4s ease infinite;
+}
+
+@keyframes blink{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.4;transform:scale(.75)}
+}
+
+/* Fields */
+.field{margin-bottom:16px;}
+
+label{
+  display:block;
+  font-size:.6rem;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--sub);
+  margin-bottom:6px;
+}
+
+input[type=text]{
+  width:100%;
+  background:#f8faff;
+  border:1.5px solid var(--border);
+  border-radius:9px;
+  padding:11px 14px;
+  font-family:'DM Mono',monospace;
+  font-size:.82rem;color:var(--ink);
+  outline:none;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+
+input[type=text]:focus{
+  border-color:var(--accent);
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(26,86,219,0.1);
+}
+
+input[type=text]::placeholder{color:#a0aec0;}
+
+/* Upload zone */
+.upload-zone{
+  border:2px dashed var(--border);
+  border-radius:10px;
+  padding:20px;
+  text-align:center;
+  cursor:pointer;
+  transition:border-color .2s,background .2s;
+  background:#f8faff;
+  position:relative;
+}
+
+.upload-zone:hover,
+.upload-zone.drag{
+  border-color:var(--accent);
+  background:var(--accent-lt);
+}
+
+.upload-zone input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;
+}
+
+.upload-icon{font-size:1.6rem;margin-bottom:6px;}
+
+.upload-main{
+  font-size:.78rem;font-weight:500;color:var(--ink);
+}
+
+.upload-sub{
+  font-size:.65rem;color:var(--sub);margin-top:2px;
+}
+
+.file-chosen{
+  display:none;align-items:center;gap:8px;
+  background:var(--green-lt);
+  border:1px solid #a7f3d0;
+  border-radius:8px;padding:10px 14px;
+  font-size:.72rem;color:var(--green);
+  margin-top:10px;
+}
+
+.file-chosen.show{display:flex;}
+
+/* Submit btn */
+.submit-btn{
+  width:100%;
+  margin-top:6px;
+  padding:13px;
+  background:var(--accent);
+  color:#fff;
+  font-family:'Clash Display',sans-serif;
+  font-size:1rem;font-weight:700;
+  letter-spacing:.3px;
+  border:none;border-radius:10px;
+  cursor:pointer;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  box-shadow:0 4px 20px rgba(26,86,219,0.25);
+}
+
+.submit-btn:hover{
+  background:#1747c0;
+  transform:translateY(-1px);
+  box-shadow:0 6px 28px rgba(26,86,219,0.35);
+}
+
+.submit-btn:active{transform:translateY(0);}
+.submit-btn:disabled{background:#a0aec0;cursor:not-allowed;box-shadow:none;transform:none;}
+
+/* Result panel */
+.result{
+  display:none;
+  border-radius:11px;
+  padding:18px;
+  margin-top:18px;
+  animation:fadeUp .35s ease forwards;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.result.present{
+  background:var(--green-lt);
+  border:1.5px solid #6ee7b7;
+}
+
+.result.absent{
+  background:var(--red-lt);
+  border:1.5px solid #fca5a5;
+}
+
+.result-head{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:10px;
+}
+
+.result-icon{font-size:1.4rem;}
+
+.result-title{
+  font-family:'Clash Display',sans-serif;
+  font-size:1rem;font-weight:700;
+}
+
+.present .result-title{color:var(--green);}
+.absent  .result-title{color:var(--red);}
+
+.result-rows{font-size:.7rem;}
+
+.rrow{
+  display:flex;justify-content:space-between;
+  padding:4px 0;
+}
+
+.rrow+.rrow{border-top:1px solid rgba(0,0,0,0.06);}
+
+.rkey{color:var(--sub);}
+.rval{font-weight:500;color:var(--ink);}
+.rval.ok{color:var(--green);}
+.rval.no{color:var(--red);}
+
+/* Reset link */
+.reset-link{
+  display:block;text-align:center;
+  margin-top:14px;
+  font-size:.65rem;color:var(--sub);
+  cursor:pointer;text-decoration:underline;
+  letter-spacing:.5px;
+}
+
+.reset-link:hover{color:var(--accent);}
+
+/* Steps */
+.steps{
+  display:flex;gap:6px;
+  margin-bottom:22px;
+}
+
+.step{
+  flex:1;height:3px;border-radius:3px;
+  background:var(--border);
+  transition:background .3s;
+}
+
+.step.done{background:var(--accent);}
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- Browser chrome look -->
+  <div class="topbar">
+    <span class="topbar-logo">📋 AttendQR</span>
+    <span class="topbar-badge">Secure · Verified</span>
+  </div>
+
+  <div class="urlbar">
+    <span class="url-dot"></span>
+    <span class="url-text">https://attendqr.edu.in/student/verify</span>
+  </div>
+
+  <div class="card">
+    <div class="session-pill">
+      <span class="pulse"></span>
+      Live Session · CSE Sem 6
+    </div>
+
+    <div class="card-head">
+      <h1>Mark Your<br>Attendance</h1>
+      <p>Fill in your details and upload your ID card or college ID to verify your presence.</p>
+    </div>
+
+    <!-- Progress steps -->
+    <div class="steps">
+      <div class="step done" id="s1"></div>
+      <div class="step" id="s2"></div>
+      <div class="step" id="s3"></div>
+    </div>
+
+    <!-- Name -->
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="fname" placeholder="e.g. Rahul Patel" oninput="updateSteps()">
+    </div>
+
+    <!-- Enrolment -->
+    <div class="field">
+      <label>Enrolment Number</label>
+      <input type="text" id="enroll" placeholder="e.g. 21CSE04056" oninput="updateSteps()">
+    </div>
+
+    <!-- Upload -->
+    <div class="field">
+      <label>Upload ID / Proof</label>
+      <div class="upload-zone" id="dropZone">
+        <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFile(this)">
+        <div class="upload-icon">📎</div>
+        <div class="upload-main">Click or drag your file here</div>
+        <div class="upload-sub">College ID, Admit Card · JPG, PNG, PDF</div>
+      </div>
+      <div class="file-chosen" id="fileChosen">
+        <span>✅</span>
+        <span id="fileName">file.jpg</span>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="verify()" disabled>
+      Verify Attendance →
+    </button>
+
+    <!-- Result -->
+    <div class="result" id="resultPanel">
+      <div class="result-head">
+        <span class="result-icon" id="rIcon">✅</span>
+        <span class="result-title" id="rTitle">Attendance Marked</span>
+      </div>
+      <div class="result-rows" id="rRows"></div>
+    </div>
+
+    <span class="reset-link" id="resetLink" style="display:none" onclick="resetAll()">↺ Submit another response</span>
+  </div>
+</div>
+
+<script>
+  let chosenFile = null;
+
+  // ── File handler ──
+  function handleFile(input) {
+    chosenFile = input.files[0];
+    if (chosenFile) {
+      document.getElementById('fileName').textContent = chosenFile.name;
+      document.getElementById('fileChosen').classList.add('show');
+    }
+    updateSteps();
+  }
+
+  // ── Drag & drop ──
+  const dz = document.getElementById('dropZone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if (f) {
+      chosenFile = f;
+      document.getElementById('fileName').textContent = f.name;
+      document.getElementById('fileChosen').classList.add('show');
+      updateSteps();
+    }
+  });
+
+  // ── Step progress ──
+  function updateSteps() {
+    const name   = document.getElementById('fname').value.trim();
+    const enroll = document.getElementById('enroll').value.trim();
+
+    document.getElementById('s1').classList.toggle('done', name.length > 1);
+    document.getElementById('s2').classList.toggle('done', enroll.length > 4);
+    document.getElementById('s3').classList.toggle('done', !!chosenFile);
+
+    document.getElementById('submitBtn').disabled = !(name && enroll.length > 4 && chosenFile);
+  }
+
+  // ── Verify ──
+  function verify() {
+    const name   = document.getElementById('fname').value.trim();
+    const enroll = document.getElementById('enroll').value.trim().toUpperCase();
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Verifying…';
+    btn.disabled = true;
+
+    // Simulate server check (demo: enrollments starting with 21 = present)
+    setTimeout(() => {
+      const isPresent = /^2[0-9]/.test(enroll) && name.length > 1;
+      const timestamp = new Date().toLocaleString('en-IN', {
+        day:'2-digit', month:'short', year:'numeric',
+        hour:'2-digit', minute:'2-digit'
+      });
+      const sessionID = 'ATT-' + Math.random().toString(36).substr(2,6).toUpperCase();
+
+      const panel = document.getElementById('resultPanel');
+      panel.className = 'result ' + (isPresent ? 'present' : 'absent');
+
+      document.getElementById('rIcon').textContent  = isPresent ? '✅' : '❌';
+      document.getElementById('rTitle').textContent = isPresent ? 'Attendance Marked!' : 'Verification Failed';
+
+      document.getElementById('rRows').innerHTML = `
+        <div class="rrow"><span class="rkey">Name</span><span class="rval">${name}</span></div>
+        <div class="rrow"><span class="rkey">Enrolment</span><span class="rval">${enroll}</span></div>
+        <div class="rrow"><span class="rkey">File Uploaded</span><span class="rval ${isPresent?'ok':'no'}">${chosenFile ? chosenFile.name : '—'}</span></div>
+        <div class="rrow"><span class="rkey">Status</span><span class="rval ${isPresent?'ok':'no'}">${isPresent ? 'PRESENT ✓' : 'NOT VERIFIED ✗'}</span></div>
+        <div class="rrow"><span class="rkey">Timestamp</span><span class="rval">${timestamp}</span></div>
+        <div class="rrow"><span class="rkey">Session ID</span><span class="rval">${sessionID}</span></div>
+      `;
+
+      panel.style.display = 'block';
+      document.getElementById('resetLink').style.display = 'block';
+      btn.style.display = 'none';
+    }, 1800);
+  }
+
+  // ── Reset ──
+  function resetAll() {
+    document.getElementById('fname').value = '';
+    document.getElementById('enroll').value = '';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileChosen').classList.remove('show');
+    document.getElementById('resultPanel').style.display = 'none';
+    document.getElementById('resetLink').style.display = 'none';
+    chosenFile = null;
+
+    const btn = document.getElementById('submitBtn');
+    btn.style.display = '';
+    btn.textContent = 'Verify Attendance →';
+    btn.disabled = true;
+
+    ['s1','s2','s3'].forEach(id => document.getElementById(id).classList.remove('done'));
+  }
+</script>
+</body>
+</html>

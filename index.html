@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AttendQR – Attendance Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="icon-box">📋</div>
+    <div class="header-text">
+      <h1>AttendQR</h1>
+      <p>Attendance Management System</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div id="formCard" class="card">
+    <div class="card-label">// Session Details</div>
+    <div class="form-grid">
+      <input class="full" id="subject" type="text" placeholder="Subject / Course Name" value="Attendance Management System">
+      <input id="faculty" type="text" placeholder="Faculty Name" value="Prof. Sharma">
+      <input id="room" type="text" placeholder="Room / Lab" value="Lab 301">
+      <input id="date" type="date">
+      <input id="time" type="time">
+      <select id="dept" class="full">
+        <option value="CSE">Computer Science &amp; Eng.</option>
+        <option value="IT">Information Technology</option>
+        <option value="ECE">Electronics &amp; Comm.</option>
+        <option value="ME">Mechanical Engineering</option>
+        <option value="CIVIL">Civil Engineering</option>
+      </select>
+      <input id="batch" type="text" placeholder="Batch / Semester" value="Sem 6 · 2024-25">
+      <input id="custom" type="text" placeholder="Custom URL / Link (optional)" class="full">
+    </div>
+    <button class="gen-btn" onclick="generateQR()">⚡ Generate QR Code</button>
+  </div>
+
+  <!-- QR Output Card -->
+  <div class="card">
+    <div class="card-label">// QR Output</div>
+    <div id="qrSection" class="qr-section">
+      <div class="live-badge"><span class="live-dot"></span> Active Session</div>
+      <div class="qr-wrapper">
+        <div class="qr-corner tl"></div>
+        <div class="qr-corner tr"></div>
+        <div class="qr-corner bl"></div>
+        <div class="qr-corner br"></div>
+        <div id="qrcode"></div>
+      </div>
+      <div class="session-info" id="sessionInfo"></div>
+      <div class="action-row">
+        <button class="dl-btn" onclick="downloadQR()">⬇ Download QR</button>
+        <button class="reset-btn" onclick="resetForm()">↺ Reset</button>
+      </div>
+    </div>
+    <div id="placeholder">Fill details above &amp; generate →</div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
